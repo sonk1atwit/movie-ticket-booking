@@ -29,5 +29,45 @@ ul {
     color: #fff;
     padding: 1rem 5%;
     display: flex;
-    
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .01);
+}
+
+.logo-container h1 {
+    font-size: 1.0rem;
+    font-weight: 700;
+}
+
+.main-navigation ul {
+    display: flex;
+    gap: 2rem;
+}
+
+.main-navigation a {
+    padding: .5rem 0;
+    font-weight: 500;
+    position: relative;
+    transition: color .3s;
+}
+
+.main-navigation a:hover {
+    color: #e94560;
+}
+
+.main-navigation a.active {
+    color: #e94560;
+}
+
+.main-navigation a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #e94560;
 }
