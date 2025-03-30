@@ -22,7 +22,7 @@ ul {
     list-style: none;
 }
 
-/* THIS IS THE STYLE FOR ALL PAGES */
+/* HEADER SYTLE */
 
 .site-header {
     background-color: #1a1a2e;
@@ -71,3 +71,79 @@ ul {
     height: 2px;
     background-color: #e94560;
 }
+
+/* SECTION STYLE */
+
+section {
+    pad: 3rem 5%;
+}
+
+section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #e94560;
+    margin: .5rem auto;
+}
+
+/* LOADING SPINNER */
+
+.loading-spinner {
+    text-align: center;
+    padding: 2rem;
+    grid-column: 1 / -1;
+}
+
+/* FOOTER */
+
+.site-footer {
+    background-color: #1a1a2e;
+    color: #fff;
+    padding: 3rem 5% 1rem;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.site-column h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    position: relative;
+    padding-bottom: .5rem;
+}
+
+.footer-column h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background-color: #e94560;
+}
+
+.footer-column ul li {
+    margin-bottom: .5rem;
+}
+
+.footer-column a:hover {
+    color: #e94560;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+}
+
