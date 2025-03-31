@@ -1,0 +1,245 @@
+/* Movie Details Container */
+.movie-details-container {
+    display: flex;
+    padding: 3rem 5%;
+    background-color: #1a1a2e;
+    color: #fff;
+    gap: 3rem;
+}
+
+.movie-poster {
+    flex: 0 0 300px;
+    height: 450px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.movie-info {
+    flex: 1;
+}
+
+.movie-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.movie-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    color: #ddd;
+}
+
+.movie-rating {
+    margin-bottom: 1.5rem;
+}
+
+.stars {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+}
+
+.star {
+    color: #ffd700;
+    font-size: 1.2rem;
+}
+
+.star.empty {
+    color: #666;
+}
+
+.movie-synopsis {
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+.movie-cast, .movie-details {
+    margin-bottom: 1.5rem;
+}
+
+.movie-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.movie-info h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background-color: #e94560;
+}
+
+.cast-list, .details-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+}
+
+.details-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.details-item {
+    margin-bottom: 0.5rem;
+}
+
+.details-label {
+    color: #ddd;
+    margin-right: 0.5rem;
+}
+
+/* Showtimes Section */
+.showtimes-section {
+    padding: 3rem 5%;
+}
+
+.date-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: #e94560 #f5f5f5;
+}
+
+.date-selector::-webkit-scrollbar {
+    height: 6px;
+}
+
+.date-selector::-webkit-scrollbar-track {
+    background: #f5f5f5;
+}
+
+.date-selector::-webkit-scrollbar-thumb {
+    background-color: #e94560;
+    border-radius: 20px;
+}
+
+.date-option {
+    padding: 0.8rem 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 120px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.date-option.active {
+    background-color: #e94560;
+    color: #fff;
+    border-color: #e94560;
+}
+
+.date-option:hover:not(.active) {
+    border-color: #e94560;
+}
+
+.date-weekday {
+    font-weight: 600;
+}
+
+.date-day {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0.3rem 0;
+}
+
+.date-month {
+    font-size: 0.9rem;
+}
+
+.showtimes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.theater-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.theater-name {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.theater-address {
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.time-slot {
+    padding: 0.6rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.time-slot:hover {
+    border-color: #e94560;
+    color: #e94560;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .movie-details-container {
+        flex-direction: column;
+        padding: 2rem 5%;
+    }
+    
+    .movie-poster {
+        flex: 0 0 auto;
+        max-width: 250px;
+        height: 375px;
+        margin: 0 auto;
+    }
+    
+    .movie-title {
+        font-size: 2rem;
+        margin-top: 1.5rem;
+    }
+    
+    .date-selector {
+        padding-bottom: 0.5rem;
+    }
+    
+    .date-option {
+        min-width: 100px;
+        padding: 0.6rem 1rem;
+    }
+    
+    .date-day {
+        font-size: 1.1rem;
+    }
+}
