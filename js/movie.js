@@ -21,7 +21,7 @@ const movies = [
     {
         id: 2,
         title: "The Lost City",
-        poster: "https://source.unsplash.com/300x450/?adventure",
+        poster: null, // This movie will show a green placeholder
         genre: "Adventure, Comedy",
         duration: "1h 52m",
         rating: 4.2,
@@ -72,7 +72,7 @@ const movies = [
     {
         id: 5,
         title: "Wonder Woman 3",
-        poster: "https://source.unsplash.com/300x450/?superhero",
+        poster: null, // This movie will show a green placeholder
         genre: "Action, Fantasy",
         duration: "2h 25m",
         rating: 4.5,
@@ -103,4 +103,90 @@ const movies = [
             { time: "9:15 PM", theater: "Theater 3" }
         ]
     }
-]
+];
+
+// DOM Elements
+const movieGrid = document.getElementById('movie-grid');
+const loadingSpinner = document.getElementById('loading-spinner');
+
+// Function to create a movie card
+function createMovieCard(movie) {
+    const movieCard = document.createElement('div');
+    movieCard.className = 'movie-card';
+    movieCard.dataset.id = movie.id;
+    
+    // Convert rating to stars
+    const fullStars = Math.floor(movie.rating);
+    const hasHalfStar = movie.rating % 1 >= 0.5;
+    let starsHTML = '';
+    
+    for (let i = 1; i <= 5; i++) {
+        if (i <= fullStars) {
+            starsHTML += '<span class="star full">★</span>';
+        } else if (i === fullStars + 1 && hasHalfStar) {
+            starsHTML += '<span class="star half">★</span>';
+        } else {
+            starsHTML += '<span class="star empty">☆</span>';
+        }
+    }
+    
+    // Poster image HTML - with fallback to green square
+    const posterHTML = movie.poster ? 
+        `<img src="${movie.poster}" alt="${movie.title} Poster">` : 
+        `<div class="placeholder-poster" style="background-color: #4CAF50; width: 100%; height: 100%;"></div>`;
+    
+    movieCard.innerHTML = `
+        <div class="movie-poster">
+            ${posterHTML}
+            <div class="movie-rating">${movie.rating}</div>
+        </div>
+        <div class="movie-info">
+            <h3 class="movie-title">${movie.title}</h3>
+            <p class="movie-genre">${movie.genre}</p>
+            <p class="movie-duration">${movie.duration}</p>
+            <div class="movie-stars">${starsHTML}</div>
+            <button class="btn book-now-btn" data-id="${movie.id}">Book Now</button>
+        </div>
+    `;
+    
+    // Add event listener to the "Book Now" button
+    const bookButton = movieCard.querySelector('.book-now-btn');
+    bookButton.addEventListener('click', () => {
+        navigateToMovieDetails(movie.id);
+    });
+    
+    return movieCard;
+}
+
+// Function to navigate to movie details page
+function navigateToMovieDetails(movieId) {
+    // Store the selected movie ID in local storage
+    localStorage.setItem('selectedMovieId', movieId);
+    
+    // Navigate to the details page
+    window.location.href = 'pages/movie-details.html';
+}
+
+// Function to load movies
+function loadMovies() {
+    // In a real application, this would be an API call
+    // For now, we'll simulate a small delay
+    
+    // Show loading spinner
+    loadingSpinner.style.display = 'block';
+    
+    // Simulate API call delay
+    setTimeout(() => {
+        // Hide loading spinner after "loading" is complete
+        loadingSpinner.style.display = 'none';
+        
+        // Add movie cards to the grid
+        movies.forEach(movie => {
+            const movieCard = createMovieCard(movie);
+            movieGrid.appendChild(movieCard);
+        });
+    }, 800); // 800ms delay to simulate loading
+}
+
+// Load movies when the page is ready
+document.addEventListener('DOMContentLoaded', loadMovies);
