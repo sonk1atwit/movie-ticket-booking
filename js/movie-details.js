@@ -7,6 +7,136 @@ const showtimesContainer = document.getElementById('showtimes-container');
 let movieData = null;
 let selectedDate = null;
 
+// Sample movies data matching your movies.js
+const movies = [
+    {
+        id: 1,
+        title: "Interstellar 2",
+        poster: "../assets/images/Interstellar2.png",
+        genre: "Sci-Fi, Adventure",
+        duration: "2h 49m",
+        rating: 4.8,
+        director: "Christopher Nolan",
+        synopsis: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+        releaseDate: "2025-03-15",
+        cast: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain", "Michael Caine"],
+        language: "English",
+        subtitles: "Available",
+        classification: "PG-13",
+        showtimes: [
+            { time: "10:30 AM", theater: "Theater 1" },
+            { time: "1:45 PM", theater: "Theater 3" },
+            { time: "5:00 PM", theater: "Theater 2" },
+            { time: "8:15 PM", theater: "Theater 1" }
+        ]
+    },
+    {
+        id: 2,
+        title: "The Lost City",
+        poster: "../assets/images/TheLostCity.png",
+        genre: "Adventure, Comedy",
+        duration: "1h 52m",
+        rating: 4.2,
+        director: "Aaron Nee, Adam Nee",
+        synopsis: "A reclusive romance novelist on a book tour with her cover model gets swept up in a kidnapping attempt that lands them both in a cutthroat jungle adventure.",
+        releaseDate: "2025-02-10",
+        cast: ["Sandra Bullock", "Channing Tatum", "Daniel Radcliffe", "Brad Pitt"],
+        language: "English",
+        subtitles: "Available",
+        classification: "PG-13",
+        showtimes: [
+            { time: "11:00 AM", theater: "Theater 2" },
+            { time: "2:30 PM", theater: "Theater 1" },
+            { time: "6:45 PM", theater: "Theater 3" },
+            { time: "9:30 PM", theater: "Theater 2" }
+        ]
+    },
+    {
+        id: 3,
+        title: "Moonfall",
+        poster: "../assets/images/Moonfall.png",
+        genre: "Sci-Fi, Action",
+        duration: "2h 10m",
+        rating: 3.9,
+        director: "Roland Emmerich",
+        synopsis: "A mysterious force knocks the moon from its orbit and sends it hurtling toward Earth.",
+        releaseDate: "2025-01-20",
+        cast: ["Halle Berry", "Patrick Wilson", "John Bradley", "Michael Peña"],
+        language: "English",
+        subtitles: "Available",
+        classification: "PG-13",
+        showtimes: [
+            { time: "10:00 AM", theater: "Theater 3" },
+            { time: "1:15 PM", theater: "Theater 2" },
+            { time: "4:30 PM", theater: "Theater 1" },
+            { time: "7:45 PM", theater: "Theater 3" }
+        ]
+    },
+    {
+        id: 4,
+        title: "The Batman Returns",
+        poster: "../assets/images/BatmanReturns.png",
+        genre: "Action, Crime",
+        duration: "2h 56m",
+        rating: 4.7,
+        director: "Matt Reeves",
+        synopsis: "Batman ventures into Gotham City's underworld when a sadistic killer leaves behind a trail of cryptic clues.",
+        releaseDate: "2025-03-05",
+        cast: ["Robert Pattinson", "Zoë Kravitz", "Paul Dano", "Jeffrey Wright"],
+        language: "English",
+        subtitles: "Available",
+        classification: "PG-13",
+        showtimes: [
+            { time: "11:30 AM", theater: "Theater 1" },
+            { time: "3:00 PM", theater: "Theater 3" },
+            { time: "6:15 PM", theater: "Theater 2" },
+            { time: "9:45 PM", theater: "Theater 1" }
+        ]
+    },
+    {
+        id: 5,
+        title: "Wonder Woman 3",
+        poster: "../assets/images/WonderWoman3.png",
+        genre: "Action, Fantasy",
+        duration: "2h 25m",
+        rating: 4.5,
+        director: "Patty Jenkins",
+        synopsis: "Diana Prince faces a new threat in the modern world while uncovering secrets from her past.",
+        releaseDate: "2025-02-28",
+        cast: ["Gal Gadot", "Chris Pine", "Kristen Wiig", "Pedro Pascal"],
+        language: "English",
+        subtitles: "Available",
+        classification: "PG-13",
+        showtimes: [
+            { time: "10:15 AM", theater: "Theater 2" },
+            { time: "1:30 PM", theater: "Theater 1" },
+            { time: "4:45 PM", theater: "Theater 3" },
+            { time: "8:00 PM", theater: "Theater 2" }
+        ]
+    },
+    {
+        id: 6,
+        title: "The Haunting",
+        poster: "../assets/images/TheHaunting.png",
+        genre: "Horror, Thriller",
+        duration: "1h 48m",
+        rating: 4.1,
+        director: "James Wan",
+        synopsis: "A family discovers their new home has a dark history and is haunted by a malevolent presence.",
+        releaseDate: "2025-03-20",
+        cast: ["Vera Farmiga", "Patrick Wilson", "Taissa Farmiga", "Ron Livingston"],
+        language: "English",
+        subtitles: "Available",
+        classification: "R",
+        showtimes: [
+            { time: "12:00 PM", theater: "Theater 3" },
+            { time: "3:15 PM", theater: "Theater 2" },
+            { time: "6:30 PM", theater: "Theater 1" },
+            { time: "9:15 PM", theater: "Theater 3" }
+        ]
+    }
+];
+
 // Load movie data from localStorage or use sample data
 function loadMovieData() {
     const selectedMovieId = localStorage.getItem('selectedMovieId');
@@ -14,50 +144,19 @@ function loadMovieData() {
     
     // For demo purposes, we'll use sample data if no ID in localStorage
     if (!selectedMovieId) {
-        movieData = {
-            id: 1,
-            title: "Interstellar 2",
-            poster: "https://source.unsplash.com/300x450/?space",
-            genre: "Sci-Fi, Adventure",
-            duration: "2h 49m",
-            rating: 4.8,
-            director: "Christopher Nolan",
-            releaseDate: "2025-03-15",
-            synopsis: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival. In this sequel, they face new challenges as they explore even more distant galaxies.",
-            cast: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain", "Michael Caine"],
-            showtimes: [
-                { time: "10:30 AM", theater: "Theater 1" },
-                { time: "1:45 PM", theater: "Theater 3" },
-                { time: "5:00 PM", theater: "Theater 2" },
-                { time: "8:15 PM", theater: "Theater 1" }
-            ]
-        };
+        console.log("No movie ID found in localStorage, using default movie data");
+        movieData = movies[0]; // Default to first movie
     } else {
-        // In a real app, you'd fetch this from your data source
-        // For now, we'll use the hard-coded movie object in movies.js
+        // Find the movie in our local data based on the ID
+        const foundMovie = movies.find(movie => movie.id == selectedMovieId);
         
-        // For the demo, let's use a sample movie
-        movieData = {
-            id: parseInt(selectedMovieId),
-            title: "Interstellar 2",
-            poster: "../assets/images/Interstellar2.png", // Path adjusted for pages subfolder
-            genre: "Sci-Fi, Adventure",
-            duration: "2h 49m",
-            rating: 4.8,
-            director: "Christopher Nolan",
-            releaseDate: "2025-03-15",
-            synopsis: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival. In this sequel, they face new challenges as they explore even more distant galaxies.",
-            cast: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain", "Michael Caine"],
-            language: "English",
-            subtitles: "Available",
-            classification: "PG-13",
-            showtimes: [
-                { time: "10:30 AM", theater: "Theater 1" },
-                { time: "1:45 PM", theater: "Theater 3" },
-                { time: "5:00 PM", theater: "Theater 2" },
-                { time: "8:15 PM", theater: "Theater 1" }
-            ]
-        };
+        if (foundMovie) {
+            console.log("Found movie in local data:", foundMovie.title);
+            movieData = foundMovie;
+        } else {
+            console.log("Movie ID not found in local data, using default movie data");
+            movieData = movies[0]; // Default to first movie
+        }
     }
     
     console.log("Movie data loaded:", movieData);
