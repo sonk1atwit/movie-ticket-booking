@@ -21,7 +21,7 @@ const movies = [
     {
         id: 2,
         title: "The Lost City",
-        poster: null, // This movie will show a green placeholder
+        poster: "assets/images/TheLostCity.png",
         genre: "Adventure, Comedy",
         duration: "1h 52m",
         rating: 4.2,
@@ -38,7 +38,7 @@ const movies = [
     {
         id: 3,
         title: "Moonfall",
-        poster: "https://source.unsplash.com/300x450/?moon",
+        poster: "assets/images/Moonfall.png",
         genre: "Sci-Fi, Action",
         duration: "2h 10m",
         rating: 3.9,
@@ -55,7 +55,7 @@ const movies = [
     {
         id: 4,
         title: "The Batman Returns",
-        poster: "https://source.unsplash.com/300x450/?batman",
+        poster: "assets/images/BatmanReturns.png",
         genre: "Action, Crime",
         duration: "2h 56m",
         rating: 4.7,
@@ -72,7 +72,7 @@ const movies = [
     {
         id: 5,
         title: "Wonder Woman 3",
-        poster: null, // This movie will show a green placeholder
+        poster: "assets/images/WonderWoman3.png",
         genre: "Action, Fantasy",
         duration: "2h 25m",
         rating: 4.5,
@@ -89,7 +89,7 @@ const movies = [
     {
         id: 6,
         title: "The Haunting",
-        poster: "https://source.unsplash.com/300x450/?horror",
+        poster: "assets/images/TheHaunting.png",
         genre: "Horror, Thriller",
         duration: "1h 48m",
         rating: 4.1,
