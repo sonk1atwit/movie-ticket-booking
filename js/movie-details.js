@@ -9,6 +9,8 @@ let selectedDate = null;
 
 // Load movie data from localStorage or use sample data
 function loadMovieData() {
+    console.log("Movie ID from localStorage:", movieId);
+
     const movieId = localStorage.getItem('selectedMovieId');
     
     // For demo purposes, we'll use sample data if no ID in localStorage
@@ -64,6 +66,7 @@ function loadMovieData() {
 
 // Display movie details
 function displayMovieDetails() {
+    console.log("Displaying movie data:", movieData);
     // Convert rating to stars
     const fullStars = Math.floor(movieData.rating);
     const hasHalfStar = movieData.rating % 1 >= 0.5;
