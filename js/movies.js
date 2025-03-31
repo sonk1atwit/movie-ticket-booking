@@ -167,30 +167,108 @@ function navigateToMovieDetails(movieId) {
     window.location.href = 'pages/movie-details.html';
 }
 
+// Carousel Navigation
+function setupCarouselNavigation() {
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const movieGrid = document.getElementById('movie-grid');
+    
+    // Scroll amount (width of one movie card plus gap)
+    const scrollAmount = 260; // 240px card width + 20px gap
+    
+    if (prevBtn && nextBtn && movieGrid) {
+        // Previous button click
+        prevBtn.addEventListener('click', () => {
+            movieGrid.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Next button click
+        nextBtn.addEventListener('click', () => {
+            movieGrid.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Hide/show buttons based on scroll position
+        movieGrid.addEventListener('scroll', () => {
+            // Show/hide previous button
+            if (movieGrid.scrollLeft <= 10) {
+                prevBtn.style.opacity = '0.5';
+                prevBtn.style.pointerEvents = 'none';
+            } else {
+                prevBtn.style.opacity = '1';
+                prevBtn.style.pointerEvents = 'auto';
+            }
+            
+            // Show/hide next button
+            if (movieGrid.scrollLeft >= movieGrid.scrollWidth - movieGrid.clientWidth - 10) {
+                nextBtn.style.opacity = '0.5';
+                nextBtn.style.pointerEvents = 'none';
+            } else {
+                nextBtn.style.opacity = '1';
+                nextBtn.style.pointerEvents = 'auto';
+            }
+        });
+        
+        // Initial button state
+        prevBtn.style.opacity = '0.5';
+        prevBtn.style.pointerEvents = 'none';
+    }
+}
+
 // Function to load movies
 function loadMovies() {
+    console.log("loadMovies function called");
+    
     // In a real application, this would be an API call
     // For now, we'll simulate a small delay
-    console.log("loadMovies function called");
     
     // Show loading spinner
     loadingSpinner.style.display = 'block';
     
     // Simulate API call delay
     setTimeout(() => {
+        console.log("Timeout function executing");
+        
         // Hide loading spinner after "loading" is complete
         loadingSpinner.style.display = 'none';
         
+        console.log("Movies array:", movies.length, "items");
+        
         // Add movie cards to the grid
         movies.forEach(movie => {
-            console.log("Timeout function executing");
-            loadingSpinner.style.display = 'none';
-            console.log("Movies array:", movies.length, "items");
+            console.log(`Creating card for ${movie.title}, poster: ${movie.poster ? "Has poster" : "GREEN PLACEHOLDER"}`);
             const movieCard = createMovieCard(movie);
             movieGrid.appendChild(movieCard);
         });
+        
+        // Setup carousel navigation
+        setupCarouselNavigation();
+        
+        console.log("Movie grid now contains:", movieGrid.children.length, "children");
     }, 800); // 800ms delay to simulate loading
 }
 
+// Function to handle keyboard navigation for carousel
+function setupKeyboardNavigation() {
+    document.addEventListener('keydown', (e) => {
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        
+        if (e.key === 'ArrowLeft' && prevBtn) {
+            prevBtn.click();
+        } else if (e.key === 'ArrowRight' && nextBtn) {
+            nextBtn.click();
+        }
+    });
+}
+
 // Load movies when the page is ready
-document.addEventListener('DOMContentLoaded', loadMovies);
+document.addEventListener('DOMContentLoaded', () => {
+    loadMovies();
+    setupKeyboardNavigation();
+});
