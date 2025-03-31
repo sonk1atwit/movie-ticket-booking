@@ -4,7 +4,7 @@ const movies = [
     {
         id: 1,
         title: "Interstellar 2",
-        poster: "https://source.unsplash.com/300x450/?space",
+        poster: "assets/images/Interstellar2.png",
         genre: "Sci-Fi, Adventure",
         duration: "2h 49m",
         rating: 4.8,
