@@ -1,0 +1,89 @@
+/* Mobile First Approach */
+
+/* Small devices (phones, 576px and below) */
+@media (max-width: 576px) {
+    .site-header {
+        flex-direction: column;
+        padding: 1rem 3%;
+    }
+    
+    .logo-container {
+        margin-bottom: 1rem;
+    }
+    
+    .main-navigation ul {
+        gap: 1rem;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-content p {
+        font-size: 1rem;
+    }
+    
+    section {
+        padding: 2rem 3%;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 577px) and (max-width: 768px) {
+    .site-header {
+        padding: 1rem 4%;
+    }
+    
+    .hero-content h2 {
+        font-size: 2rem;
+    }
+    
+    section {
+        padding: 2.5rem 4%;
+    }
+    
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 769px) and (max-width: 992px) {
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 993px) {
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+/* For navigation menu on mobile */
+@media (max-width: 576px) {
+    .main-navigation ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
