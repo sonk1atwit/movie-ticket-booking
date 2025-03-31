@@ -171,6 +171,7 @@ function navigateToMovieDetails(movieId) {
 function loadMovies() {
     // In a real application, this would be an API call
     // For now, we'll simulate a small delay
+    console.log("loadMovies function called");
     
     // Show loading spinner
     loadingSpinner.style.display = 'block';
@@ -182,6 +183,9 @@ function loadMovies() {
         
         // Add movie cards to the grid
         movies.forEach(movie => {
+            console.log("Timeout function executing");
+            loadingSpinner.style.display = 'none';
+            console.log("Movies array:", movies.length, "items");
             const movieCard = createMovieCard(movie);
             movieGrid.appendChild(movieCard);
         });
