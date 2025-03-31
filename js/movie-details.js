@@ -9,12 +9,11 @@ let selectedDate = null;
 
 // Load movie data from localStorage or use sample data
 function loadMovieData() {
-    console.log("Movie ID from localStorage:", movieId);
-
-    const movieId = localStorage.getItem('selectedMovieId');
+    const selectedMovieId = localStorage.getItem('selectedMovieId');
+    console.log("Selected movie ID from localStorage:", selectedMovieId);
     
     // For demo purposes, we'll use sample data if no ID in localStorage
-    if (!movieId) {
+    if (!selectedMovieId) {
         movieData = {
             id: 1,
             title: "Interstellar 2",
@@ -39,9 +38,9 @@ function loadMovieData() {
         
         // For the demo, let's use a sample movie
         movieData = {
-            id: parseInt(movieId),
+            id: parseInt(selectedMovieId),
             title: "Interstellar 2",
-            poster: "https://source.unsplash.com/300x450/?space",
+            poster: "../assets/images/Interstellar2.png", // Path adjusted for pages subfolder
             genre: "Sci-Fi, Adventure",
             duration: "2h 49m",
             rating: 4.8,
@@ -61,12 +60,14 @@ function loadMovieData() {
         };
     }
     
+    console.log("Movie data loaded:", movieData);
     displayMovieDetails();
 }
 
 // Display movie details
 function displayMovieDetails() {
-    console.log("Displaying movie data:", movieData);
+    console.log("Displaying movie details:", movieData);
+    
     // Convert rating to stars
     const fullStars = Math.floor(movieData.rating);
     const hasHalfStar = movieData.rating % 1 >= 0.5;
@@ -268,6 +269,7 @@ function displayShowtimes() {
 
 // Initialize the page
 function init() {
+    console.log("Initializing movie details page");
     loadMovieData();
     displayDateSelector();
 }

@@ -211,6 +211,25 @@
     color: #e94560;
 }
 
+/* Loading spinner */
+.loading-spinner {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Green placeholder */
+.placeholder-poster {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .movie-details-container {
@@ -241,5 +260,19 @@
     
     .date-day {
         font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .showtimes-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .movie-title {
+        font-size: 1.8rem;
+    }
+    
+    .movie-synopsis {
+        font-size: 0.95rem;
     }
 }
