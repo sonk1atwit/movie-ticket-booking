@@ -14,6 +14,64 @@ let selectedSeats = [];
 let movieData = null;
 let showtimeData = null;
 
+// Sample movie data to match movies.js
+const movies = [
+    {
+        id: 1,
+        title: "Interstellar 2",
+        poster: "../assets/images/Interstellar2.png",
+        genre: "Sci-Fi, Adventure",
+        duration: "2h 49m",
+        rating: 4.8,
+        director: "Christopher Nolan"
+    },
+    {
+        id: 2,
+        title: "The Lost City",
+        poster: "../assets/images/TheLostCity.png",
+        genre: "Adventure, Comedy",
+        duration: "1h 52m",
+        rating: 4.2,
+        director: "Aaron Nee, Adam Nee"
+    },
+    {
+        id: 3,
+        title: "Moonfall",
+        poster: "../assets/images/Moonfall.png",
+        genre: "Sci-Fi, Action",
+        duration: "2h 10m",
+        rating: 3.9,
+        director: "Roland Emmerich"
+    },
+    {
+        id: 4,
+        title: "The Batman Returns",
+        poster: "../assets/images/BatmanReturns.png",
+        genre: "Action, Crime",
+        duration: "2h 56m",
+        rating: 4.7,
+        director: "Matt Reeves"
+    },
+    {
+        id: 5,
+        title: "Wonder Woman 3",
+        poster: "../assets/images/WonderWoman3.png",
+        genre: "Action, Fantasy",
+        duration: "2h 25m",
+        rating: 4.5,
+        director: "Patty Jenkins"
+    },
+    {
+        id: 6,
+        title: "The Haunting",
+        poster: "../assets/images/TheHaunting.png",
+        genre: "Horror, Thriller",
+        duration: "1h 48m",
+        rating: 4.1,
+        director: "James Wan"
+    }
+];
+
 // Seat map configuration
 const seatMap = {
     rows: 8,
@@ -59,68 +117,54 @@ function initOccupiedSeats() {
 
 // Load movie data from localStorage
 function loadMovieData() {
+    // Get the selected movie ID from localStorage
     const movieId = localStorage.getItem('selectedMovieId');
-    const showtimeIndex = localStorage.getItem('selectedShowtimeIndex');
+    console.log("Seat Selection Page - Selected movie ID:", movieId);
     
-    // For demo, we'll use dummy data if localStorage is empty
-    if (!movieId) {
-        movieData = {
-            id: 1,
-            title: "Sample Movie",
-            poster: "https://source.unsplash.com/300x450/?movie",
-            genre: "Action, Adventure",
-            duration: "2h 15m",
-            rating: 4.5,
-            director: "John Doe"
-        };
-        
-        showtimeData = {
-            time: "7:30 PM",
-            theater: "Theater 2",
-            date: "March 26, 2025"
-        };
+    // Get showtime data
+    const time = localStorage.getItem('selectedShowtimeTime') || "8:15 PM";
+    const date = localStorage.getItem('selectedShowtimeDate') || "2025-03-26";
+    const theaterName = localStorage.getItem('theaterName') || "Theater 1";
+    
+    // Set showtime data
+    showtimeData = {
+        time,
+        theater: theaterName,
+        date
+    };
+    
+    // Find the movie data from the sample array using the ID
+    if (movieId) {
+        const foundMovie = movies.find(movie => movie.id == movieId);
+        if (foundMovie) {
+            console.log("Found movie:", foundMovie.title);
+            movieData = foundMovie;
+        } else {
+            console.log("Movie ID not found, using default");
+            movieData = movies[0]; // Default to first movie if not found
+        }
     } else {
-        // In a real app, you'd fetch this from your data source
-        // For the demo, we'll use localStorage
-        // In a real-world scenario, this would come from your backend
-        
-        const movies = JSON.parse(localStorage.getItem('movies'));
-        if (movies) {
-            movieData = movies.find(movie => movie.id === parseInt(movieId));
-            if (movieData && showtimeIndex) {
-                showtimeData = movieData.showtimes[parseInt(showtimeIndex)];
-            }
-        }
-        
-        // If we still don't have data, use the dummy data
-        if (!movieData) {
-            movieData = {
-                id: movieId,
-                title: "Interstellar 2",
-                poster: "https://source.unsplash.com/300x450/?space",
-                genre: "Sci-Fi, Adventure",
-                duration: "2h 49m",
-                rating: 4.8,
-                director: "Christopher Nolan"
-            };
-            
-            showtimeData = {
-                time: "8:15 PM",
-                theater: "Theater 1",
-                date: "March 26, 2025"
-            };
-        }
+        console.log("No movie ID in localStorage, using default");
+        movieData = movies[0]; // Default to first movie
     }
     
+    // Display the movie information
     displayMovieInfo();
 }
 
 // Display movie information in the banner
 function displayMovieInfo() {
+    console.log("Displaying movie info:", movieData.title);
+    
+    // Create poster HTML with fallback to green square
+    const posterHTML = movieData.poster ? 
+        `<img src="${movieData.poster}" alt="${movieData.title} Poster">` : 
+        `<div class="placeholder-poster" style="background-color: #4CAF50; width: 100%; height: 100%;"></div>`;
+        
     movieInfoBanner.innerHTML = `
         <div class="movie-banner-content">
             <div class="movie-banner-poster">
-                <img src="${movieData.poster}" alt="${movieData.title} Poster">
+                ${posterHTML}
             </div>
             <div class="movie-banner-info">
                 <h2>${movieData.title}</h2>
@@ -184,7 +228,7 @@ function createSeatingPlan() {
             
             // Add click event to available seats
             if (!seat.classList.contains('occupied')) {
-                seat.addEventListener('click', () => toggleSeat(seatId, seat));
+                seat.addEventListener('click', () => toggleSeat(seatId, seat, i));
             }
             
             // Add tooltip with seat ID
@@ -198,7 +242,7 @@ function createSeatingPlan() {
 }
 
 // Toggle seat selection
-function toggleSeat(seatId, seatElement) {
+function toggleSeat(seatId, seatElement, rowIndex) {
     if (seatElement.classList.contains('selected')) {
         // Deselect the seat
         seatElement.classList.remove('selected');
@@ -215,8 +259,7 @@ function toggleSeat(seatId, seatElement) {
         seatElement.classList.add('selected');
         
         // Add to selected seats array
-        const row = seatId.charAt(0);
-        const isPremium = seatMap.premiumRows.includes(row.charCodeAt(0) - 65);
+        const isPremium = seatMap.premiumRows.includes(rowIndex);
         const price = isPremium ? TICKET_PRICE + PREMIUM_SURCHARGE : TICKET_PRICE;
         
         selectedSeats.push({
@@ -259,6 +302,8 @@ function init() {
     
     // Add event listener to proceed button
     proceedButton.addEventListener('click', () => {
+        // We keep the selectedMovieId in localStorage for the checkout page
+        console.log("Proceeding to checkout with movie ID:", localStorage.getItem('selectedMovieId'));
         window.location.href = 'checkout.html';
     });
 }

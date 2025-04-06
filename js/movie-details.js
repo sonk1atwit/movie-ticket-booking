@@ -7,7 +7,7 @@ const showtimesContainer = document.getElementById('showtimes-container');
 let movieData = null;
 let selectedDate = null;
 
-// Sample movies data matching your movies.js
+// Sample movies data
 const movies = [
     {
         id: 1,
@@ -140,7 +140,7 @@ const movies = [
 // Load movie data from localStorage or use sample data
 function loadMovieData() {
     const selectedMovieId = localStorage.getItem('selectedMovieId');
-    console.log("Selected movie ID from localStorage:", selectedMovieId);
+    console.log("Movie Details Page - Selected movie ID from localStorage:", selectedMovieId);
     
     // For demo purposes, we'll use sample data if no ID in localStorage
     if (!selectedMovieId) {
@@ -356,9 +356,14 @@ function displayShowtimes() {
             localStorage.setItem('selectedShowtimeTime', time);
             localStorage.setItem('selectedShowtimeDate', date);
             
-            // For our demo, we'll just store the theater name and the showtime index
+            // IMPORTANT: We keep the selectedMovieId in localStorage for next pages
+            // No need to reset it here, as it should already be set
+            
+            // For our demo, we'll just store the theater name
             const theaterName = theaters.find(t => t.id == theaterId).name;
             localStorage.setItem('theaterName', theaterName);
+            
+            console.log("Navigating to seat selection with movie ID:", localStorage.getItem('selectedMovieId'));
             
             // Navigate to seat selection page
             window.location.href = 'seat-selection.html';

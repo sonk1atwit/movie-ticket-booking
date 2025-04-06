@@ -25,68 +25,26 @@ let selectedSeats = [];
 
 // Load data from localStorage
 function loadOrderData() {
-    console.log("Loading order data");
+    console.log("Checkout Page - Loading order data");
     
     // Get movie data
     const movieId = localStorage.getItem('selectedMovieId');
-    console.log("Selected movie ID:", movieId);
-    
-    // In a real app, we would fetch this from the server
-    // For this demo, we'll use hardcoded sample data
-    
-    // Sample movie data
-    const movies = [
-        {
-            id: 1,
-            title: "Interstellar 2",
-            poster: "../assets/images/Interstellar2.png",
-            genre: "Sci-Fi, Adventure",
-            duration: "2h 49m"
-        },
-        {
-            id: 2,
-            title: "The Lost City",
-            poster: "../assets/images/TheLostCity.png",
-            genre: "Adventure, Comedy",
-            duration: "1h 52m"
-        },
-        {
-            id: 3,
-            title: "Moonfall",
-            poster: "../assets/images/Moonfall.png",
-            genre: "Sci-Fi, Action",
-            duration: "2h 10m"
-        },
-        {
-            id: 4,
-            title: "The Batman Returns",
-            poster: "../assets/images/BatmanReturns.png",
-            genre: "Action, Crime",
-            duration: "2h 56m"
-        },
-        {
-            id: 5,
-            title: "Wonder Woman 3",
-            poster: "../assets/images/WonderWoman3.png",
-            genre: "Action, Fantasy",
-            duration: "2h 25m"
-        },
-        {
-            id: 6,
-            title: "The Haunting",
-            poster: "../assets/images/TheHaunting.png",
-            genre: "Horror, Thriller",
-            duration: "1h 48m"
-        }
-    ];
+    console.log("Checkout Page - Selected movie ID:", movieId);
     
     if (!movieId) {
         // Default movie data if none selected
+        console.log("No movie ID in localStorage, using default");
         movieData = movies[0];
     } else {
         // Find selected movie
         const foundMovie = movies.find(movie => movie.id == movieId);
-        movieData = foundMovie || movies[0];
+        if (foundMovie) {
+            console.log("Found movie:", foundMovie.title);
+            movieData = foundMovie;
+        } else {
+            console.log("Movie ID not found, using default");
+            movieData = movies[0]; // Default to first movie if not found
+        }
     }
     
     // Get showtime data
@@ -111,7 +69,7 @@ function loadOrderData() {
             { id: "F7", isPremium: false, price: REGULAR_SEAT_PRICE },
             { id: "F8", isPremium: false, price: REGULAR_SEAT_PRICE }
         ];
-        console.log("Using sample seat data");
+        console.log("No seats in localStorage, using sample seat data");
     }
     
     // Display data on the page
@@ -193,8 +151,8 @@ function displaySelectedSeats() {
     summaryDiv.className = 'seats-summary';
     summaryDiv.innerHTML = `
         <p>${selectedSeats.length} seat${selectedSeats.length !== 1 ? 's' : ''} selected</p>
-        ${regularSeats.length > 0 ? `<p>${regularSeats.length} Regular seat${regularSeats.length !== 1 ? 's' : ''} @ $${REGULAR_SEAT_PRICE.toFixed(2)} each</p>` : ''}
-        ${premiumSeats.length > 0 ? `<p>${premiumSeats.length} Premium seat${premiumSeats.length !== 1 ? 's' : ''} @ $${PREMIUM_SEAT_PRICE.toFixed(2)} each</p>` : ''}
+        ${regularSeats.length > 0 ? `<p>${regularSeats.length} Regular seat${regularSeats.length !== 1 ? 's' : ''} @ ${REGULAR_SEAT_PRICE.toFixed(2)} each</p>` : ''}
+        ${premiumSeats.length > 0 ? `<p>${premiumSeats.length} Premium seat${premiumSeats.length !== 1 ? 's' : ''} @ ${PREMIUM_SEAT_PRICE.toFixed(2)} each</p>` : ''}
     `;
     seatsList.appendChild(summaryDiv);
 }
@@ -388,3 +346,49 @@ function init() {
 
 // Run initialization when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
+
+// Sample movie data to match movies.js
+const movies = [
+    {
+        id: 1,
+        title: "Interstellar 2",
+        poster: "../assets/images/Interstellar2.png",
+        genre: "Sci-Fi, Adventure",
+        duration: "2h 49m"
+    },
+    {
+        id: 2,
+        title: "The Lost City",
+        poster: "../assets/images/TheLostCity.png",
+        genre: "Adventure, Comedy",
+        duration: "1h 52m"
+    },
+    {
+        id: 3,
+        title: "Moonfall",
+        poster: "../assets/images/Moonfall.png",
+        genre: "Sci-Fi, Action",
+        duration: "2h 10m"
+    },
+    {
+        id: 4,
+        title: "The Batman Returns",
+        poster: "../assets/images/BatmanReturns.png",
+        genre: "Action, Crime",
+        duration: "2h 56m"
+    },
+    {
+        id: 5,
+        title: "Wonder Woman 3",
+        poster: "../assets/images/WonderWoman3.png",
+        genre: "Action, Fantasy",
+        duration: "2h 25m"
+    },
+    {
+        id: 6,
+        title: "The Haunting",
+        poster: "../assets/images/TheHaunting.png",
+        genre: "Horror, Thriller",
+        duration: "1h 48m"
+    }
+];
