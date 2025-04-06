@@ -1,11 +1,6 @@
 // DOM Elements
 const movieSummary = document.getElementById('movie-summary');
-const adultTicketsInput = document.getElementById('adult-tickets');
-const childTicketsInput = document.getElementById('child-tickets');
-const adultMinusBtn = document.getElementById('adult-minus');
-const adultPlusBtn = document.getElementById('adult-plus');
-const childMinusBtn = document.getElementById('child-minus');
-const childPlusBtn = document.getElementById('child-plus');
+const seatsList = document.getElementById('seats-list');
 const subtotalElement = document.getElementById('subtotal');
 const bookingFeeElement = document.getElementById('booking-fee');
 const taxElement = document.getElementById('tax');
@@ -17,8 +12,8 @@ const ticketDetails = document.getElementById('ticket-details');
 const confirmationEmail = document.getElementById('confirmation-email');
 
 // Constants
-const ADULT_PRICE = 15.00;
-const CHILD_PRICE = 10.00;
+const REGULAR_SEAT_PRICE = 12.50;
+const PREMIUM_SEAT_PRICE = 15.50;
 const BOOKING_FEE = 1.50;
 const TAX_RATE = 0.08;
 
@@ -30,8 +25,11 @@ let selectedSeats = [];
 
 // Load data from localStorage
 function loadOrderData() {
+    console.log("Loading order data");
+    
     // Get movie data
     const movieId = localStorage.getItem('selectedMovieId');
+    console.log("Selected movie ID:", movieId);
     
     // In a real app, we would fetch this from the server
     // For this demo, we'll use hardcoded sample data
@@ -102,14 +100,23 @@ function loadOrderData() {
         theaterName
     };
     
-    // Get selected seats from localStorage or use defaults
+    // Get selected seats from localStorage
     const seatsData = localStorage.getItem('selectedSeats');
     if (seatsData) {
         selectedSeats = JSON.parse(seatsData);
+        console.log("Selected seats from localStorage:", selectedSeats);
+    } else {
+        // Sample seat data if none in localStorage
+        selectedSeats = [
+            { id: "F7", isPremium: false, price: REGULAR_SEAT_PRICE },
+            { id: "F8", isPremium: false, price: REGULAR_SEAT_PRICE }
+        ];
+        console.log("Using sample seat data");
     }
     
     // Display data on the page
     displayMovieSummary();
+    displaySelectedSeats();
     calculateTotal();
 }
 
@@ -152,58 +159,66 @@ function displayMovieSummary() {
     `;
 }
 
-// Ticket quantity controls
-function setupTicketControls() {
-    // Adult tickets
-    adultMinusBtn.addEventListener('click', () => {
-        const currentValue = parseInt(adultTicketsInput.value);
-        if (currentValue > 0) {
-            adultTicketsInput.value = currentValue - 1;
-            calculateTotal();
-        }
+// Display selected seats
+function displaySelectedSeats() {
+    if (selectedSeats.length === 0) {
+        // Show empty state if no seats selected
+        seatsList.innerHTML = `
+            <div class="empty-state">
+                <p>No seats selected</p>
+                <a href="seat-selection.html" class="select-seats-btn">Select Seats</a>
+            </div>
+        `;
+        return;
+    }
+    
+    // Sort seats for better display
+    const sortedSeats = [...selectedSeats].sort((a, b) => a.id.localeCompare(b.id));
+    
+    // Group by seat type for summary
+    const regularSeats = sortedSeats.filter(seat => !seat.isPremium);
+    const premiumSeats = sortedSeats.filter(seat => seat.isPremium);
+    
+    // Create seat tags
+    seatsList.innerHTML = '';
+    sortedSeats.forEach(seat => {
+        const seatTag = document.createElement('div');
+        seatTag.className = `seat-tag${seat.isPremium ? ' premium' : ''}`;
+        seatTag.textContent = seat.id;
+        seatsList.appendChild(seatTag);
     });
     
-    adultPlusBtn.addEventListener('click', () => {
-        const currentValue = parseInt(adultTicketsInput.value);
-        adultTicketsInput.value = currentValue + 1;
-        calculateTotal();
-    });
-    
-    // Child tickets
-    childMinusBtn.addEventListener('click', () => {
-        const currentValue = parseInt(childTicketsInput.value);
-        if (currentValue > 0) {
-            childTicketsInput.value = currentValue - 1;
-            calculateTotal();
-        }
-    });
-    
-    childPlusBtn.addEventListener('click', () => {
-        const currentValue = parseInt(childTicketsInput.value);
-        childTicketsInput.value = currentValue + 1;
-        calculateTotal();
-    });
+    // Add seat summary
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'seats-summary';
+    summaryDiv.innerHTML = `
+        <p>${selectedSeats.length} seat${selectedSeats.length !== 1 ? 's' : ''} selected</p>
+        ${regularSeats.length > 0 ? `<p>${regularSeats.length} Regular seat${regularSeats.length !== 1 ? 's' : ''} @ $${REGULAR_SEAT_PRICE.toFixed(2)} each</p>` : ''}
+        ${premiumSeats.length > 0 ? `<p>${premiumSeats.length} Premium seat${premiumSeats.length !== 1 ? 's' : ''} @ $${PREMIUM_SEAT_PRICE.toFixed(2)} each</p>` : ''}
+    `;
+    seatsList.appendChild(summaryDiv);
 }
 
 // Calculate total
 function calculateTotal() {
-    const adultTickets = parseInt(adultTicketsInput.value) || 0;
-    const childTickets = parseInt(childTicketsInput.value) || 0;
+    // Calculate subtotal based on seat prices
+    const subtotal = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
     
-    // Ensure at least one ticket is selected
-    if (adultTickets === 0 && childTickets === 0) {
-        adultTicketsInput.value = 1;
-        const adultTickets = 1;
-    }
-    
-    const subtotal = (adultTickets * ADULT_PRICE) + (childTickets * CHILD_PRICE);
+    // Calculate tax and total
     const tax = (subtotal + BOOKING_FEE) * TAX_RATE;
     const total = subtotal + BOOKING_FEE + tax;
     
+    // Update display
     subtotalElement.textContent = subtotal.toFixed(2);
     bookingFeeElement.textContent = BOOKING_FEE.toFixed(2);
     taxElement.textContent = tax.toFixed(2);
     totalElement.textContent = total.toFixed(2);
+    
+    // Disable confirm button if no seats selected
+    const confirmBtn = document.querySelector('.confirm-btn');
+    if (confirmBtn) {
+        confirmBtn.disabled = selectedSeats.length === 0;
+    }
 }
 
 // Generate a random ticket code
@@ -236,6 +251,11 @@ function handleFormSubmit(e) {
         return;
     }
     
+    if (selectedSeats.length === 0) {
+        alert('Please select at least one seat before checkout');
+        return;
+    }
+    
     // Show confirmation
     showConfirmation(email);
 }
@@ -256,8 +276,10 @@ function showConfirmation(email) {
     }
     
     const ticketCode = generateTicketCode();
-    const adultTickets = parseInt(adultTicketsInput.value) || 0;
-    const childTickets = parseInt(childTicketsInput.value) || 0;
+    
+    // Sort seats for display
+    const sortedSeats = [...selectedSeats].sort((a, b) => a.id.localeCompare(b.id));
+    const seatsDisplay = sortedSeats.map(seat => seat.id).join(', ');
     
     // Create ticket details HTML
     ticketDetails.innerHTML = `
@@ -266,7 +288,7 @@ function showConfirmation(email) {
             <p><strong>Date:</strong> ${formattedDate}</p>
             <p><strong>Time:</strong> ${showtimeData.time}</p>
             <p><strong>Theater:</strong> ${theaterName}</p>
-            <p><strong>Tickets:</strong> ${adultTickets} Adult, ${childTickets} Child</p>
+            <p><strong>Seats:</strong> ${seatsDisplay}</p>
         </div>
         <div class="ticket-code">${ticketCode}</div>
         <p>Please show this code at the cinema or print your tickets at the kiosk.</p>
@@ -293,10 +315,74 @@ function showConfirmation(email) {
     localStorage.removeItem('selectedSeats');
 }
 
+// Format card number with spaces
+function formatCardNumber(input) {
+    // Remove all non-digit characters
+    let value = input.value.replace(/\D/g, '');
+    
+    // Add space after every 4 digits
+    value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+    
+    // Limit to 19 characters (16 digits + 3 spaces)
+    value = value.substring(0, 19);
+    
+    // Update input value
+    input.value = value;
+}
+
+// Format expiry date
+function formatExpiryDate(input) {
+    // Remove all non-digit characters
+    let value = input.value.replace(/\D/g, '');
+    
+    // Add slash after first 2 digits
+    if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+    
+    // Limit to 5 characters (MM/YY)
+    value = value.substring(0, 5);
+    
+    // Update input value
+    input.value = value;
+}
+
+// Format CVV
+function formatCVV(input) {
+    // Remove all non-digit characters
+    let value = input.value.replace(/\D/g, '');
+    
+    // Limit to 3 or 4 digits
+    value = value.substring(0, 4);
+    
+    // Update input value
+    input.value = value;
+}
+
+// Setup input formatters
+function setupInputFormatters() {
+    const cardNumberInput = document.getElementById('card-number');
+    const expiryDateInput = document.getElementById('expiry-date');
+    const cvvInput = document.getElementById('cvv');
+    
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', () => formatCardNumber(cardNumberInput));
+    }
+    
+    if (expiryDateInput) {
+        expiryDateInput.addEventListener('input', () => formatExpiryDate(expiryDateInput));
+    }
+    
+    if (cvvInput) {
+        cvvInput.addEventListener('input', () => formatCVV(cvvInput));
+    }
+}
+
 // Initialize
 function init() {
+    console.log("Initializing checkout page");
     loadOrderData();
-    setupTicketControls();
+    setupInputFormatters();
     paymentForm.addEventListener('submit', handleFormSubmit);
 }
 
