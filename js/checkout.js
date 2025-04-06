@@ -1,203 +1,304 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineMagic Theater Checkout</title>
-    <style>
-        body {
-            font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 0 20px;
-            background: #f0f2f5;
-        }
+// DOM Elements
+const movieSummary = document.getElementById('movie-summary');
+const adultTicketsInput = document.getElementById('adult-tickets');
+const childTicketsInput = document.getElementById('child-tickets');
+const adultMinusBtn = document.getElementById('adult-minus');
+const adultPlusBtn = document.getElementById('adult-plus');
+const childMinusBtn = document.getElementById('child-minus');
+const childPlusBtn = document.getElementById('child-plus');
+const subtotalElement = document.getElementById('subtotal');
+const bookingFeeElement = document.getElementById('booking-fee');
+const taxElement = document.getElementById('tax');
+const totalElement = document.getElementById('total');
+const paymentForm = document.getElementById('payment-form');
+const paymentFormContainer = document.getElementById('payment-form-container');
+const confirmation = document.getElementById('confirmation');
+const ticketDetails = document.getElementById('ticket-details');
+const confirmationEmail = document.getElementById('confirmation-email');
 
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+// Constants
+const ADULT_PRICE = 15.00;
+const CHILD_PRICE = 10.00;
+const BOOKING_FEE = 1.50;
+const TAX_RATE = 0.08;
 
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+// Variables
+let movieData = null;
+let showtimeData = null;
+let theaterName = null;
+let selectedSeats = [];
 
-        .ticket-selector {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
+// Load data from localStorage
+function loadOrderData() {
+    // Get movie data
+    const movieId = localStorage.getItem('selectedMovieId');
+    
+    // In a real app, we would fetch this from the server
+    // For this demo, we'll use hardcoded sample data
+    
+    // Sample movie data
+    const movies = [
+        {
+            id: 1,
+            title: "Interstellar 2",
+            poster: "../assets/images/Interstellar2.png",
+            genre: "Sci-Fi, Adventure",
+            duration: "2h 49m"
+        },
+        {
+            id: 2,
+            title: "The Lost City",
+            poster: "../assets/images/TheLostCity.png",
+            genre: "Adventure, Comedy",
+            duration: "1h 52m"
+        },
+        {
+            id: 3,
+            title: "Moonfall",
+            poster: "../assets/images/Moonfall.png",
+            genre: "Sci-Fi, Action",
+            duration: "2h 10m"
+        },
+        {
+            id: 4,
+            title: "The Batman Returns",
+            poster: "../assets/images/BatmanReturns.png",
+            genre: "Action, Crime",
+            duration: "2h 56m"
+        },
+        {
+            id: 5,
+            title: "Wonder Woman 3",
+            poster: "../assets/images/WonderWoman3.png",
+            genre: "Action, Fantasy",
+            duration: "2h 25m"
+        },
+        {
+            id: 6,
+            title: "The Haunting",
+            poster: "../assets/images/TheHaunting.png",
+            genre: "Horror, Thriller",
+            duration: "1h 48m"
         }
+    ];
+    
+    if (!movieId) {
+        // Default movie data if none selected
+        movieData = movies[0];
+    } else {
+        // Find selected movie
+        const foundMovie = movies.find(movie => movie.id == movieId);
+        movieData = foundMovie || movies[0];
+    }
+    
+    // Get showtime data
+    const date = localStorage.getItem('selectedShowtimeDate') || "2025-03-26";
+    const time = localStorage.getItem('selectedShowtimeTime') || "8:15 PM";
+    theaterName = localStorage.getItem('theaterName') || "Lincoln Square Cinema";
+    
+    showtimeData = {
+        date,
+        time,
+        theaterName
+    };
+    
+    // Get selected seats from localStorage or use defaults
+    const seatsData = localStorage.getItem('selectedSeats');
+    if (seatsData) {
+        selectedSeats = JSON.parse(seatsData);
+    }
+    
+    // Display data on the page
+    displayMovieSummary();
+    calculateTotal();
+}
 
-        .input-group {
-            display: flex;
-            align-items: center;
-            margin: 1rem 0;
-        }
-
-        label {
-            flex: 1;
-            color: #34495e;
-            font-weight: bold;
-        }
-
-        input[type="number"] {
-            width: 70px;
-            padding: 8px;
-            border: 2px solid #bdc3c7;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .price-display {
-            background: #3498db;
-            color: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin: 1.5rem 0;
-            text-align: center;
-        }
-
-        .payment-form {
-            display: grid;
-            gap: 1rem;
-        }
-
-        input[type="text"], input[type="number"], input[type="month"] {
-            padding: 12px;
-            border: 2px solid #bdc3c7;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        button {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            width: 100%;
-        }
-
-        button:hover {
-            background: #219a52;
-            transform: scale(1.02);
-        }
-
-        .confirmation {
-            text-align: center;
-            padding: 2rem;
-            background: #2ecc71;
-            color: white;
-            border-radius: 10px;
-            display: none;
-        }
-
-        .confirmation h2 {
-            margin: 0 0 1rem 0;
-        }
-
-        .ticket-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🎬 CineMagic Theater Checkout</h1>
-        
-        <div class="ticket-selector">
-            <h3>Select Your Tickets</h3>
-            <div class="input-group">
-                <label>Adult Tickets ($15):</label>
-                <input type="number" id="adultTickets" min="0" value="1">
+// Display movie summary
+function displayMovieSummary() {
+    // Format the date
+    let formattedDate = showtimeData.date;
+    try {
+        const dateObj = new Date(showtimeData.date);
+        formattedDate = dateObj.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch (error) {
+        console.error('Error formatting date:', error);
+    }
+    
+    // Create poster HTML with fallback to green square
+    const posterHTML = movieData.poster ? 
+        `<img src="${movieData.poster}" alt="${movieData.title} Poster">` : 
+        `<div class="placeholder-poster" style="background-color: #4CAF50; width: 100%; height: 100%;"></div>`;
+    
+    movieSummary.innerHTML = `
+        <div class="movie-poster-small">
+            ${posterHTML}
+        </div>
+        <div class="movie-info-small">
+            <h3>${movieData.title}</h3>
+            <div class="movie-meta-small">
+                <span>${movieData.genre}</span> | <span>${movieData.duration}</span>
             </div>
-            <div class="input-group">
-                <label>Child Tickets ($10):</label>
-                <input type="number" id="childTickets" min="0" value="0">
+            <div class="showtime-info-small">
+                <p><strong>Date:</strong> ${formattedDate}</p>
+                <p><strong>Time:</strong> ${showtimeData.time}</p>
+                <p><strong>Theater:</strong> ${theaterName}</p>
             </div>
         </div>
+    `;
+}
 
-        <div class="price-display">
-            <h3>Total Price</h3>
-            <p>Subtotal: $<span id="subtotal">15.00</span></p>
-            <p>Tax (8%): $<span id="tax">1.20</span></p>
-            <p>Total: $<span id="total">16.20</span></p>
-        </div>
-
-        <div class="payment-form">
-            <h3>Payment Information</h3>
-            <input type="text" placeholder="Cardholder Name" id="cardName">
-            <input type="text" placeholder="Card Number" id="cardNumber" 
-                   pattern="[0-9\s]{13,19}" inputmode="numeric">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <input type="month" placeholder="MM/YY" id="expDate">
-                <input type="number" placeholder="CVV" id="cvv">
-            </div>
-        </div>
-
-        <button onclick="processPayment()">Confirm Purchase</button>
-
-        <div class="confirmation" id="confirmation">
-            <div class="ticket-icon">🎟️</div>
-            <h2>Enjoy the Show!</h2>
-            <p>Your tickets have been successfully purchased!</p>
-            <p>A confirmation email is on its way.</p>
-        </div>
-    </div>
-
-    <script>
-        function calculateTotal() {
-            const adultPrice = 15;
-            const childPrice = 10;
-            const taxRate = 0.08;
-
-            const adults = parseInt(document.getElementById('adultTickets').value) || 0;
-            const children = parseInt(document.getElementById('childTickets').value) || 0;
-
-            const subtotal = (adults * adultPrice) + (children * childPrice);
-            const tax = subtotal * taxRate;
-            const total = subtotal + tax;
-
-            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-            document.getElementById('tax').textContent = tax.toFixed(2);
-            document.getElementById('total').textContent = total.toFixed(2);
+// Ticket quantity controls
+function setupTicketControls() {
+    // Adult tickets
+    adultMinusBtn.addEventListener('click', () => {
+        const currentValue = parseInt(adultTicketsInput.value);
+        if (currentValue > 0) {
+            adultTicketsInput.value = currentValue - 1;
+            calculateTotal();
         }
-
-        function processPayment() {
-        
-            const cardName = document.getElementById('cardName').value;
-            const cardNumber = document.getElementById('cardNumber').value;
-            
-            if(!cardName || !cardNumber) {
-                alert('Please fill in all payment details');
-                return;
-            }
-
-            
-            document.getElementById('confirmation').style.display = 'block';
-            document.querySelector('.payment-form').style.display = 'none';
-            document.querySelector('button').style.display = 'none';
-            
-            
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+    });
+    
+    adultPlusBtn.addEventListener('click', () => {
+        const currentValue = parseInt(adultTicketsInput.value);
+        adultTicketsInput.value = currentValue + 1;
+        calculateTotal();
+    });
+    
+    // Child tickets
+    childMinusBtn.addEventListener('click', () => {
+        const currentValue = parseInt(childTicketsInput.value);
+        if (currentValue > 0) {
+            childTicketsInput.value = currentValue - 1;
+            calculateTotal();
         }
+    });
+    
+    childPlusBtn.addEventListener('click', () => {
+        const currentValue = parseInt(childTicketsInput.value);
+        childTicketsInput.value = currentValue + 1;
+        calculateTotal();
+    });
+}
 
+// Calculate total
+function calculateTotal() {
+    const adultTickets = parseInt(adultTicketsInput.value) || 0;
+    const childTickets = parseInt(childTicketsInput.value) || 0;
+    
+    // Ensure at least one ticket is selected
+    if (adultTickets === 0 && childTickets === 0) {
+        adultTicketsInput.value = 1;
+        const adultTickets = 1;
+    }
+    
+    const subtotal = (adultTickets * ADULT_PRICE) + (childTickets * CHILD_PRICE);
+    const tax = (subtotal + BOOKING_FEE) * TAX_RATE;
+    const total = subtotal + BOOKING_FEE + tax;
+    
+    subtotalElement.textContent = subtotal.toFixed(2);
+    bookingFeeElement.textContent = BOOKING_FEE.toFixed(2);
+    taxElement.textContent = tax.toFixed(2);
+    totalElement.textContent = total.toFixed(2);
+}
 
-        document.getElementById('adultTickets').addEventListener('change', calculateTotal);
-        document.getElementById('childTickets').addEventListener('change', calculateTotal);
-    </script>
-</body>
-</html>
+// Generate a random ticket code
+function generateTicketCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    
+    // Generate 8 character code in format XXXX-XXXX
+    for (let i = 0; i < 8; i++) {
+        if (i === 4) code += '-';
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    return code;
+}
+
+// Handle form submission
+function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    // Basic validation
+    const cardName = document.getElementById('card-name').value.trim();
+    const cardNumber = document.getElementById('card-number').value.trim();
+    const expiryDate = document.getElementById('expiry-date').value.trim();
+    const cvv = document.getElementById('cvv').value.trim();
+    const email = document.getElementById('email').value.trim();
+    
+    if (!cardName || !cardNumber || !expiryDate || !cvv || !email) {
+        alert('Please fill in all payment details');
+        return;
+    }
+    
+    // Show confirmation
+    showConfirmation(email);
+}
+
+// Show confirmation
+function showConfirmation(email) {
+    // Format the date
+    let formattedDate = showtimeData.date;
+    try {
+        const dateObj = new Date(showtimeData.date);
+        formattedDate = dateObj.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch (error) {
+        console.error('Error formatting date:', error);
+    }
+    
+    const ticketCode = generateTicketCode();
+    const adultTickets = parseInt(adultTicketsInput.value) || 0;
+    const childTickets = parseInt(childTicketsInput.value) || 0;
+    
+    // Create ticket details HTML
+    ticketDetails.innerHTML = `
+        <div class="ticket-info">
+            <p><strong>Movie:</strong> ${movieData.title}</p>
+            <p><strong>Date:</strong> ${formattedDate}</p>
+            <p><strong>Time:</strong> ${showtimeData.time}</p>
+            <p><strong>Theater:</strong> ${theaterName}</p>
+            <p><strong>Tickets:</strong> ${adultTickets} Adult, ${childTickets} Child</p>
+        </div>
+        <div class="ticket-code">${ticketCode}</div>
+        <p>Please show this code at the cinema or print your tickets at the kiosk.</p>
+    `;
+    
+    // Set confirmation email
+    confirmationEmail.textContent = email;
+    
+    // Hide payment form and show confirmation
+    paymentFormContainer.style.display = 'none';
+    confirmation.style.display = 'block';
+    
+    // Scroll to top
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+    
+    // Clear localStorage for next booking (in a real app, you'd want to save this to a database)
+    localStorage.removeItem('selectedMovieId');
+    localStorage.removeItem('selectedShowtimeDate');
+    localStorage.removeItem('selectedShowtimeTime');
+    localStorage.removeItem('theaterName');
+    localStorage.removeItem('selectedSeats');
+}
+
+// Initialize
+function init() {
+    loadOrderData();
+    setupTicketControls();
+    paymentForm.addEventListener('submit', handleFormSubmit);
+}
+
+// Run initialization when DOM is loaded
+document.addEventListener('DOMContentLoaded', init);

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - CinemaTickets</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/checkout.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo-container">
+            <a href="../index.html"><h1>CinemaTickets</h1></a>
+        </div>
+        <nav class="main-navigation">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="showtimes.html">Showtimes</a></li>
+                <li><a href="#">Theaters</a></li>
+                <li><a href="#">Offers</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="order-summary-section">
+            <h2 class="section-title">Order Summary</h2>
+            <div class="checkout-container">
+                <div class="order-summary">
+                    <div class="movie-summary" id="movie-summary">
+                        <!-- Movie summary will be populated by JavaScript -->
+                        <div class="loading-spinner">Loading order details...</div>
+                    </div>
+                    
+                    <div class="ticket-selection">
+                        <h3>Select Your Tickets</h3>
+                        <div class="ticket-type">
+                            <label>Adult Tickets ($15.00):</label>
+                            <div class="ticket-quantity">
+                                <button class="quantity-btn minus-btn" id="adult-minus">-</button>
+                                <input type="number" id="adult-tickets" min="0" value="1" readonly>
+                                <button class="quantity-btn plus-btn" id="adult-plus">+</button>
+                            </div>
+                        </div>
+                        <div class="ticket-type">
+                            <label>Child Tickets ($10.00):</label>
+                            <div class="ticket-quantity">
+                                <button class="quantity-btn minus-btn" id="child-minus">-</button>
+                                <input type="number" id="child-tickets" min="0" value="0" readonly>
+                                <button class="quantity-btn plus-btn" id="child-plus">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="price-summary" id="price-summary">
+                        <h3>Price Summary</h3>
+                        <div class="price-item">
+                            <span class="price-label">Tickets Subtotal</span>
+                            <span class="price-value">$<span id="subtotal">15.00</span></span>
+                        </div>
+                        <div class="price-item">
+                            <span class="price-label">Booking Fee</span>
+                            <span class="price-value">$<span id="booking-fee">1.50</span></span>
+                        </div>
+                        <div class="price-item">
+                            <span class="price-label">Tax (8%)</span>
+                            <span class="price-value">$<span id="tax">1.32</span></span>
+                        </div>
+                        <div class="price-total">
+                            <span>Total</span>
+                            <span>$<span id="total">17.82</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-form" id="payment-form-container">
+                    <h3>Payment Details</h3>
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="card-name">Name on Card</label>
+                            <input type="text" id="card-name" name="card-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <input type="text" id="card-number" name="card-number" placeholder="xxxx xxxx xxxx xxxx" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry-date">Expiry Date</label>
+                                <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YY" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" name="cvv" placeholder="xxx" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email (for tickets)</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="save-card" name="save-card">
+                            <label for="save-card">Save card for future purchases</label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn back-btn" onclick="history.back()">Back</button>
+                            <button type="submit" class="btn confirm-btn">Confirm Payment</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="confirmation" class="confirmation">
+                    <div class="confirmation-icon">🎟️</div>
+                    <h2>Enjoy the Show!</h2>
+                    <p>Your tickets have been successfully purchased!</p>
+                    <div class="ticket-details" id="ticket-details">
+                        <!-- Ticket details will be populated by JavaScript -->
+                    </div>
+                    <p>A confirmation email has been sent to <span id="confirmation-email"></span></p>
+                    <button class="btn home-btn" onclick="window.location.href='../index.html'">Return to Home</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>CinemaTickets</h3>
+                <p>Your one-stop solution for movie ticket booking.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">Facebook</a>
+                    <a href="#" class="social-icon">Twitter</a>
+                    <a href="#" class="social-icon">Instagram</a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 CinemaTickets. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/checkout.js"></script>
+</body>
+</html>
