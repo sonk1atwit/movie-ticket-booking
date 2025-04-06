@@ -153,3 +153,38 @@ section-title {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 0.9rem;
 }
+
+/* Cart icon styling */
+.cart-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.cart-icon-symbol {
+    font-size: 1.2rem;
+}
+
+.cart-count {
+    background-color: #e94560;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+}
+
+.login-link {
+    font-weight: 500;
+}
+
+.login-link:hover {
+    color: #e94560;
+}
