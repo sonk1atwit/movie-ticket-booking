@@ -23,6 +23,52 @@ let showtimeData = null;
 let theaterName = null;
 let selectedSeats = [];
 
+// Sample movie data to match movies.js
+const movies = [
+    {
+        id: 1,
+        title: "Interstellar 2",
+        poster: "../assets/images/Interstellar2.png",
+        genre: "Sci-Fi, Adventure",
+        duration: "2h 49m"
+    },
+    {
+        id: 2,
+        title: "The Lost City",
+        poster: "../assets/images/TheLostCity.png",
+        genre: "Adventure, Comedy",
+        duration: "1h 52m"
+    },
+    {
+        id: 3,
+        title: "Moonfall",
+        poster: "../assets/images/Moonfall.png",
+        genre: "Sci-Fi, Action",
+        duration: "2h 10m"
+    },
+    {
+        id: 4,
+        title: "The Batman Returns",
+        poster: "../assets/images/BatmanReturns.png",
+        genre: "Action, Crime",
+        duration: "2h 56m"
+    },
+    {
+        id: 5,
+        title: "Wonder Woman 3",
+        poster: "../assets/images/WonderWoman3.png",
+        genre: "Action, Fantasy",
+        duration: "2h 25m"
+    },
+    {
+        id: 6,
+        title: "The Haunting",
+        poster: "../assets/images/TheHaunting.png",
+        genre: "Horror, Thriller",
+        duration: "1h 48m"
+    }
+];
+
 // Load data from localStorage
 function loadOrderData() {
     console.log("Checkout Page - Loading order data");
@@ -151,8 +197,8 @@ function displaySelectedSeats() {
     summaryDiv.className = 'seats-summary';
     summaryDiv.innerHTML = `
         <p>${selectedSeats.length} seat${selectedSeats.length !== 1 ? 's' : ''} selected</p>
-        ${regularSeats.length > 0 ? `<p>${regularSeats.length} Regular seat${regularSeats.length !== 1 ? 's' : ''} @ ${REGULAR_SEAT_PRICE.toFixed(2)} each</p>` : ''}
-        ${premiumSeats.length > 0 ? `<p>${premiumSeats.length} Premium seat${premiumSeats.length !== 1 ? 's' : ''} @ ${PREMIUM_SEAT_PRICE.toFixed(2)} each</p>` : ''}
+        ${regularSeats.length > 0 ? `<p>${regularSeats.length} Regular seat${regularSeats.length !== 1 ? 's' : ''} @ $${REGULAR_SEAT_PRICE.toFixed(2)} each</p>` : ''}
+        ${premiumSeats.length > 0 ? `<p>${premiumSeats.length} Premium seat${premiumSeats.length !== 1 ? 's' : ''} @ $${PREMIUM_SEAT_PRICE.toFixed(2)} each</p>` : ''}
     `;
     seatsList.appendChild(summaryDiv);
 }
@@ -271,6 +317,11 @@ function showConfirmation(email) {
     localStorage.removeItem('selectedShowtimeTime');
     localStorage.removeItem('theaterName');
     localStorage.removeItem('selectedSeats');
+    
+    // Update cart count to zero
+    if (typeof window.updateCartCount === 'function') {
+        window.updateCartCount();
+    }
 }
 
 // Format card number with spaces
@@ -341,54 +392,17 @@ function init() {
     console.log("Initializing checkout page");
     loadOrderData();
     setupInputFormatters();
-    paymentForm.addEventListener('submit', handleFormSubmit);
+    
+    // Update cart count when page loads
+    if (typeof window.updateCartCount === 'function') {
+        window.updateCartCount();
+    }
+    
+    // Add event listener to payment form
+    if (paymentForm) {
+        paymentForm.addEventListener('submit', handleFormSubmit);
+    }
 }
 
 // Run initialization when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
-
-// Sample movie data to match movies.js
-const movies = [
-    {
-        id: 1,
-        title: "Interstellar 2",
-        poster: "../assets/images/Interstellar2.png",
-        genre: "Sci-Fi, Adventure",
-        duration: "2h 49m"
-    },
-    {
-        id: 2,
-        title: "The Lost City",
-        poster: "../assets/images/TheLostCity.png",
-        genre: "Adventure, Comedy",
-        duration: "1h 52m"
-    },
-    {
-        id: 3,
-        title: "Moonfall",
-        poster: "../assets/images/Moonfall.png",
-        genre: "Sci-Fi, Action",
-        duration: "2h 10m"
-    },
-    {
-        id: 4,
-        title: "The Batman Returns",
-        poster: "../assets/images/BatmanReturns.png",
-        genre: "Action, Crime",
-        duration: "2h 56m"
-    },
-    {
-        id: 5,
-        title: "Wonder Woman 3",
-        poster: "../assets/images/WonderWoman3.png",
-        genre: "Action, Fantasy",
-        duration: "2h 25m"
-    },
-    {
-        id: 6,
-        title: "The Haunting",
-        poster: "../assets/images/TheHaunting.png",
-        genre: "Horror, Thriller",
-        duration: "1h 48m"
-    }
-];

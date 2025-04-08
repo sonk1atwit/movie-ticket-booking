@@ -292,6 +292,11 @@ function updateSelectedSeatsInfo() {
     
     // Save selected seats to localStorage for the checkout page
     localStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
+    
+    // Update cart count in the header
+    if (typeof window.updateCartCount === 'function') {
+        window.updateCartCount();
+    }
 }
 
 // Initialize the page
@@ -300,12 +305,34 @@ function init() {
     loadMovieData();
     createSeatingPlan();
     
+    // Check if there are already seats in localStorage
+    const existingSeatsData = localStorage.getItem('selectedSeats');
+    if (existingSeatsData) {
+        const existingSeats = JSON.parse(existingSeatsData);
+        
+        // Pre-select those seats if they're available in this theater
+        if (existingSeats && existingSeats.length > 0) {
+            existingSeats.forEach(savedSeat => {
+                const seatElement = document.getElementById(savedSeat.id);
+                if (seatElement && seatElement.classList.contains('available')) {
+                    const rowIndex = savedSeat.id.charCodeAt(0) - 65; // Convert 'A' to 0, 'B' to 1, etc.
+                    toggleSeat(savedSeat.id, seatElement, rowIndex);
+                }
+            });
+        }
+    }
+    
     // Add event listener to proceed button
     proceedButton.addEventListener('click', () => {
         // We keep the selectedMovieId in localStorage for the checkout page
         console.log("Proceeding to checkout with movie ID:", localStorage.getItem('selectedMovieId'));
         window.location.href = 'checkout.html';
     });
+    
+    // Update the cart count
+    if (typeof window.updateCartCount === 'function') {
+        window.updateCartCount();
+    }
 }
 
 // Run initialization when the DOM is fully loaded
