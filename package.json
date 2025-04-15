@@ -1,0 +1,25 @@
+{
+  "name": "movie-ticket-booking",
+  "version": "1.0.0",
+  "description": "A movie ticket booking website for Web Development project\r https://movie-theater-wentworth.netlify.app/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonk1atwit/movie-ticket-booking.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sonk1atwit/movie-ticket-booking/issues"
+  },
+  "homepage": "https://github.com/sonk1atwit/movie-ticket-booking#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongodb": "^6.15.0"
+  }
+}

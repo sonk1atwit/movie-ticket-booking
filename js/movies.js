@@ -1,119 +1,33 @@
-// Sample movie data
-// In a real application, this would be fetched from a backend API
-const movies = [
-    {
-        id: 1,
-        title: "Interstellar 2",
-        poster: "assets/images/Interstellar2.png",
-        genre: "Sci-Fi, Adventure",
-        duration: "2h 49m",
-        rating: 4.8,
-        director: "Christopher Nolan",
-        synopsis: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-        releaseDate: "2025-03-15",
-        showtimes: [
-            { time: "10:30 AM", theater: "Theater 1" },
-            { time: "1:45 PM", theater: "Theater 3" },
-            { time: "5:00 PM", theater: "Theater 2" },
-            { time: "8:15 PM", theater: "Theater 1" }
-        ]
-    },
-    {
-        id: 2,
-        title: "The Lost City",
-        poster: "assets/images/TheLostCity.png",
-        genre: "Adventure, Comedy",
-        duration: "1h 52m",
-        rating: 4.2,
-        director: "Aaron Nee, Adam Nee",
-        synopsis: "A reclusive romance novelist on a book tour with her cover model gets swept up in a kidnapping attempt that lands them both in a cutthroat jungle adventure.",
-        releaseDate: "2025-02-10",
-        showtimes: [
-            { time: "11:00 AM", theater: "Theater 2" },
-            { time: "2:30 PM", theater: "Theater 1" },
-            { time: "6:45 PM", theater: "Theater 3" },
-            { time: "9:30 PM", theater: "Theater 2" }
-        ]
-    },
-    {
-        id: 3,
-        title: "Moonfall",
-        poster: "assets/images/Moonfall.png",
-        genre: "Sci-Fi, Action",
-        duration: "2h 10m",
-        rating: 3.9,
-        director: "Roland Emmerich",
-        synopsis: "A mysterious force knocks the moon from its orbit and sends it hurtling toward Earth.",
-        releaseDate: "2025-01-20",
-        showtimes: [
-            { time: "10:00 AM", theater: "Theater 3" },
-            { time: "1:15 PM", theater: "Theater 2" },
-            { time: "4:30 PM", theater: "Theater 1" },
-            { time: "7:45 PM", theater: "Theater 3" }
-        ]
-    },
-    {
-        id: 4,
-        title: "The Batman Returns",
-        poster: "assets/images/BatmanReturns.png",
-        genre: "Action, Crime",
-        duration: "2h 56m",
-        rating: 4.7,
-        director: "Matt Reeves",
-        synopsis: "Batman ventures into Gotham City's underworld when a sadistic killer leaves behind a trail of cryptic clues.",
-        releaseDate: "2025-03-05",
-        showtimes: [
-            { time: "11:30 AM", theater: "Theater 1" },
-            { time: "3:00 PM", theater: "Theater 3" },
-            { time: "6:15 PM", theater: "Theater 2" },
-            { time: "9:45 PM", theater: "Theater 1" }
-        ]
-    },
-    {
-        id: 5,
-        title: "Wonder Woman 3",
-        poster: "assets/images/WonderWoman3.png",
-        genre: "Action, Fantasy",
-        duration: "2h 25m",
-        rating: 4.5,
-        director: "Patty Jenkins",
-        synopsis: "Diana Prince faces a new threat in the modern world while uncovering secrets from her past.",
-        releaseDate: "2025-02-28",
-        showtimes: [
-            { time: "10:15 AM", theater: "Theater 2" },
-            { time: "1:30 PM", theater: "Theater 1" },
-            { time: "4:45 PM", theater: "Theater 3" },
-            { time: "8:00 PM", theater: "Theater 2" }
-        ]
-    },
-    {
-        id: 6,
-        title: "The Haunting",
-        poster: "assets/images/TheHaunting.png",
-        genre: "Horror, Thriller",
-        duration: "1h 48m",
-        rating: 4.1,
-        director: "James Wan",
-        synopsis: "A family discovers their new home has a dark history and is haunted by a malevolent presence.",
-        releaseDate: "2025-03-20",
-        showtimes: [
-            { time: "12:00 PM", theater: "Theater 3" },
-            { time: "3:15 PM", theater: "Theater 2" },
-            { time: "6:30 PM", theater: "Theater 1" },
-            { time: "9:15 PM", theater: "Theater 3" }
-        ]
-    }
-];
+// movies.js - Movie listing and carousel functionality with MongoDB integration
 
 // DOM Elements
 const movieGrid = document.getElementById('movie-grid');
 const loadingSpinner = document.getElementById('loading-spinner');
+const comingSoonCarousel = document.getElementById('coming-soon-carousel');
+
+// API URL - Change this to your deployed API URL in production
+const API_URL = 'http://localhost:3000/api';
+
+// Function to fetch movies from API
+async function fetchMovies() {
+    try {
+        const response = await fetch(`${API_URL}/movies`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const movies = await response.json();
+        return movies;
+    } catch (error) {
+        console.error("Error fetching movies:", error);
+        return []; // Return empty array if there's an error
+    }
+}
 
 // Function to create a movie card
 function createMovieCard(movie) {
     const movieCard = document.createElement('div');
     movieCard.className = 'movie-card';
-    movieCard.dataset.id = movie.id;
+    movieCard.dataset.id = movie._id; // Use MongoDB _id
     
     // Convert rating to stars
     const fullStars = Math.floor(movie.rating);
@@ -145,14 +59,14 @@ function createMovieCard(movie) {
             <p class="movie-genre">${movie.genre}</p>
             <p class="movie-duration">${movie.duration}</p>
             <div class="movie-stars">${starsHTML}</div>
-            <button class="btn book-now-btn" data-id="${movie.id}">Book Now</button>
+            <button class="btn book-now-btn" data-id="${movie._id}">Book Now</button>
         </div>
     `;
     
     // Add event listener to the "Book Now" button
     const bookButton = movieCard.querySelector('.book-now-btn');
     bookButton.addEventListener('click', () => {
-        navigateToMovieDetails(movie.id);
+        navigateToMovieDetails(movie._id);
     });
     
     return movieCard;
@@ -162,6 +76,7 @@ function createMovieCard(movie) {
 function navigateToMovieDetails(movieId) {
     // Store the selected movie ID in local storage
     localStorage.setItem('selectedMovieId', movieId);
+    console.log("Navigating to movie details with ID:", movieId);
     
     // Navigate to the details page
     window.location.href = 'pages/movie-details.html';
@@ -218,39 +133,27 @@ function setupCarouselNavigation() {
         prevBtn.style.opacity = '0.5';
         prevBtn.style.pointerEvents = 'none';
     }
-}
-
-// Function to load movies
-function loadMovies() {
-    console.log("loadMovies function called");
     
-    // In a real application, this would be an API call
-    // For now, we'll simulate a small delay
+    // Set up coming soon carousel if it exists
+    const prevBtnComing = document.querySelector('.prev-btn-coming');
+    const nextBtnComing = document.querySelector('.next-btn-coming');
     
-    // Show loading spinner
-    loadingSpinner.style.display = 'block';
-    
-    // Simulate API call delay
-    setTimeout(() => {
-        console.log("Timeout function executing");
-        
-        // Hide loading spinner after "loading" is complete
-        loadingSpinner.style.display = 'none';
-        
-        console.log("Movies array:", movies.length, "items");
-        
-        // Add movie cards to the grid
-        movies.forEach(movie => {
-            console.log(`Creating card for ${movie.title}, poster: ${movie.poster ? "Has poster" : "GREEN PLACEHOLDER"}`);
-            const movieCard = createMovieCard(movie);
-            movieGrid.appendChild(movieCard);
+    if (prevBtnComing && nextBtnComing && comingSoonCarousel) {
+        // Similar event listeners for coming soon carousel
+        prevBtnComing.addEventListener('click', () => {
+            comingSoonCarousel.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
         });
         
-        // Setup carousel navigation
-        setupCarouselNavigation();
-        
-        console.log("Movie grid now contains:", movieGrid.children.length, "children");
-    }, 800); // 800ms delay to simulate loading
+        nextBtnComing.addEventListener('click', () => {
+            comingSoonCarousel.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        });
+    }
 }
 
 // Function to handle keyboard navigation for carousel
@@ -267,8 +170,60 @@ function setupKeyboardNavigation() {
     });
 }
 
-// Load movies when the page is ready
-document.addEventListener('DOMContentLoaded', () => {
+// Function to load movies
+async function loadMovies() {
+    console.log("Loading movies from MongoDB...");
+    
+    // Show loading spinner
+    if (loadingSpinner) {
+        loadingSpinner.style.display = 'block';
+    }
+    
+    try {
+        // Fetch movies from API
+        const movies = await fetchMovies();
+        console.log(`Loaded ${movies.length} movies from database`);
+        
+        // Hide loading spinner
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
+        
+        if (movies.length === 0) {
+            if (movieGrid) {
+                movieGrid.innerHTML = '<div class="error-message">No movies available at this time. Please check back later.</div>';
+            }
+            return;
+        }
+        
+        // Add movie cards to the grid
+        if (movieGrid) {
+            movies.forEach(movie => {
+                const movieCard = createMovieCard(movie);
+                movieGrid.appendChild(movieCard);
+            });
+            
+            // Setup carousel navigation after adding movies
+            setupCarouselNavigation();
+        }
+        
+        // Update the cart count after loading movies
+        if (typeof window.updateCartCount === 'function') {
+            window.updateCartCount();
+        }
+    } catch (error) {
+        console.error("Error loading movies:", error);
+        if (loadingSpinner) {
+            loadingSpinner.textContent = "Error loading movies. Please try again later.";
+        }
+    }
+}
+
+// Initialize the page
+function init() {
     loadMovies();
     setupKeyboardNavigation();
-});
+}
+
+// Load movies when the page is ready
+document.addEventListener('DOMContentLoaded', init);
